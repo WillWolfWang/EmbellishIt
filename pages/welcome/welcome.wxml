@@ -1,0 +1,6 @@
+<!--pages/welcome/welcome.wxml-->
+<!-- 欢迎界面，显示我们的 slogan，然后跳转到主界面-->
+ <!-- <text class = "welcome_slogan">我们点缀的，不止是你的头像</text>  -->
+
+<!-- canvas 绘制动态文字-->
+<canvas class="welcome_canvas" canvas-id="canvas" id="canvasId" type="2d"></canvas> 

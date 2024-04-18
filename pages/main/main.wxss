@@ -1,0 +1,255 @@
+/* pages/main/main.wxss */
+/* 头像背景框样式 */
+.avatarBackground {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: calc(100% - 32rpx);
+  height: calc(100vw - 32rpx);
+  background: white;
+  border-radius: 45rpx;
+  box-shadow: 0rpx 4rpx 8rpx 4rpx var(--mainColorDark);
+  transition: all 0.5s;
+  position: relative;
+  z-index: 1;
+  transform: translateY(0rem);
+  margin-left: 16rpx;
+  margin-top: 32rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 头像背景框点击效果 */
+.avatarBackgroundHover {
+  transform: scale(0.95, 0.95);
+  opacity: 0.9;
+}
+
+/* 指示用户添加的 icon 样式 */
+.iconAdd{
+  position: absolute;
+  left: calc(100vw / 2 - 100px - 16rpx);
+}
+
+/* canvas 的样式 */
+/* 添加隐藏属性 visibility: hidden; 模拟器有效，真机无效
+  不可以使用 wx:if，会让 canvas 销毁
+  display : none 也不起作用
+*/
+
+/* z index 生效，需要配合 position 为 absolute 使用
+  否则，会和其他控件一起分割父控件空间 
+  
+  z-index: -100;
+  它的层级是最高的，不能通过 z-index 控制层级，不需要添加这个属性
+*/
+.canvasMain {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+/* 头像 image 的样式 */
+.avatarImage{
+  display: flex;
+  width: calc(100% - 4rpx);
+  height: 100%;
+  margin: 2rpx;
+  border-radius: 45rpx;
+}
+
+/* 贴纸的样式 */
+.stickerImage {
+  display: flex;
+  position: absolute;
+  z-index: 100;
+  justify-content: center;
+}
+
+/* 贴纸的上边界 */
+.stickerImageTopLine {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 2px;
+  background-image: linear-gradient(to right, var(--mainColorDark) 0%, var(--mainColorDark) 50%, transparent 50%);
+  background-size: 30px 2px;
+  background-repeat: repeat-x;
+}
+
+.stickerImageLeftLine {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  width: 2px;
+  background-image: linear-gradient(to bottom, var(--mainColorDark) 0%, var(--mainColorDark) 50%, transparent 50%);
+  background-size: 2px 30px;
+  background-repeat: repeat-y;
+}
+
+.stickerImageBottomLine {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 2px;
+  background-image: linear-gradient(to right, var(--mainColorDark) 0%, var(--mainColorDark) 50%, transparent 50%);
+  background-size: 30px 2px;
+  background-repeat: repeat-x;
+}
+
+.stickerImageRightLine {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 2px;
+  background-image: linear-gradient(to bottom, var(--mainColorDark) 0%, var(--mainColorDark) 50%, transparent 50%);
+  background-size: 2px 30px;
+  background-repeat: repeat-y;
+}
+
+/* 保存按钮 */
+.saveView {
+  width: 160rpx;
+  height: 160rpx;
+  position: fixed;
+  background: var(--mainColor);
+  bottom: 32rpx;
+  left: calc((100vw - 160rpx) / 2);
+  display: flex;
+  border-radius: 50%;
+  box-shadow: 0rpx 0rpx 16rpx 8rpx var(--mainColorDark);
+  justify-content: center;
+  align-items: center;
+}
+/* 保存按钮点击效果 */
+.saveViewHover {
+  transform: scale(0.95, 0.95);
+}
+
+/* 刷新按钮 */
+.refreshView {
+  height: 100rpx;
+  width: 100rpx;
+  position: fixed;
+  background: var(--mainColor);
+  bottom: calc(32rpx + 80rpx - 50rpx);
+  left: calc((100vw - 160rpx) / 2 - 80rpx - 32rpx - 16rpx);
+  display: flex;
+  border-radius: 50%;
+  box-shadow: 0rpx 0rpx 16rpx 8rpx var(--mainColorDark);
+  justify-content: center;
+  align-items: center;
+}
+/* 刷新按钮的点击效果 */
+.refreshViewHover {
+  transform: scale(0.95, 0.95);
+}
+
+.imageDone {
+  width: 80rpx;
+  height: 80rpx;
+  color: var(--mainColorDark);
+}
+
+/* 左右滑动控件样式 */
+.scrollViewHorizontal {
+  white-space: nowrap;
+  width: 100vw;
+  margin-top: 32rpx;
+  height: calc((100vw - 80rpx) * 4 / 13 + 4rpx);
+}
+
+/* 滑动控件中 item 的样式 */
+.scrollViewHorizontalItem {
+  display: inline-flex;
+  width: calc((100vw - 80rpx) * 4 / 13);
+  height: calc((100vw - 80rpx) * 4 / 13);
+  margin-left: 16rpx;
+  margin-right: 16rpx;
+  background: white;
+  border-radius: 16rpx;
+  box-shadow: 0rpx 2rpx 2rpx 2rpx var(--mainColorDark);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+}
+/* 滑动控件中 item 的按压样式 */
+.scrollViewHorizontalItemHover {
+  transform: scale(0.95, 0.95);
+  opacity: 0.9;
+}
+
+/* 滑动控件 item 的图片样式 */
+.scrollViewHorizontalItemImage {
+  width : 100%;
+  height: 90%;
+}
+
+/* 滑动控件 item 的文字样式 */
+.scrollViewHorizontalItemText {
+  text-align: center;
+}
+
+/* 整个缩放屏幕样式 */
+/* pointer-events: none 让所有事件穿透过去 */
+.movableArea{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: -webkit-linear-gradient(top, var(--mainColorDark), white);
+}
+
+/* 悬浮按钮 */
+.movableViewAbout{
+  pointer-events: auto;
+  height: 100rpx;
+  width: 100rpx;
+  border-radius: 50%;
+  background: var(--mainColorDark);
+  z-index: 150;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+}
+
+.viewAboutHover {
+  color: var(--mainColor);
+}
+
+/* 贴纸菜单栏 */
+.stickerMenu {
+  width: 100vw;
+  margin-top: 32rpx;
+  display: flex;
+  justify-content: space-around;
+}
+/* 贴纸文本样式 */
+.textMenu {
+  border: 2rpx solid var(--mainColorDark);
+  background: var(--mainColor);
+  padding-top: 8rpx;
+  padding-bottom: 8rpx;
+  padding-left: 16rpx;
+  padding-right: 16rpx;
+  border-radius: 8rpx;
+}
+/* 贴纸选中效果 */
+.textMenu.active{
+  background: var(--mainColorDark);
+}
+/* 贴纸菜单栏按压效果 */
+.textMenuHover {
+  transform: scale(0.95, 0.95);
+  opacity: 0.9;
+}

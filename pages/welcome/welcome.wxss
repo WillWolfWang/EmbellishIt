@@ -1,0 +1,21 @@
+/* pages/welcome/welcome.wxss */
+ /* 设置界面高度为全屏高度 */
+ page {
+  height: 100%;
+}
+
+/* 设置中间文本样式，全屏高度，否则不好居于中间位置 */
+.welcome_slogan {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 背景 canvas 样式 */
+.welcome_canvas {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background: var(--mainColor);
+}

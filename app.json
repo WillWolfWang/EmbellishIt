@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "pages/welcome/welcome",
+    "pages/main/main",
+    "pages/about/about",
+    "pages/index/index",
+    "pages/logs/logs"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#cac34f",
+    "navigationBarTitleText": "点缀一下",
+    "navigationBarTextStyle": "black"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "useExtendedLib": {
+    "weui": true
+  }
+}

@@ -1,0 +1,88 @@
+<!--pages/main/main.wxml-->
+<!-- 该界面是主页，用来对头像进行贴纸操作 -->
+<!--整个屏幕是一个可以移动的区域-->
+
+<!-- 引入 wxs 文件 -->
+<wxs module="main" src="./main.wxs"></wxs>
+
+<movable-area class="movableArea">
+
+  <view class="avatarBackground"
+  id="v_avatarBackground" 
+  bindtouchstart="{{main.touchstart}}" bindtouchmove="{{main.touchmove}}" bindtouchend="{{main.touchend}}"
+  bindtap="avatarBackgroundTap"
+  hover-class="avatarBackgroundHover">
+
+  <!-- 保存绘制后头像的 canvas 控件-->
+  <!-- 外部包裹一层 view，通过 view 的 hidden 属性来隐藏 canvas 但是，下面的控件会补足 canva 隐藏后的位置 -->
+  <!-- <view hidden="true">
+  </view> -->
+  <!-- type="2d"
+  要是使用传统方式，就需要把 type 属性去掉 -->
+  <canvas class="canvasMain" canvas-id="canvas_id" id="canvas_draw" />
+
+  <!-- 头像 image 控件 -->
+  <image id="iv_avatar" class="avatarImage" src="{{avatarUrl}}" mode="widthFix" />
+  <!-- 指示 icon -->
+  <mp-icon wx:if="{{!hasUserInfo}}" class="iconAdd" color="#cac34f" size="{{200}}" icon="add" type="filled"/>
+
+  <!-- 贴纸控件 -->
+  <!-- 修改触摸方式，使用 wxs 方式，提高触摸性能 
+  style="width:{{stickerImageSize}}px; height:{{stickerImageSize}}px; left:{{stickerImageMarginX}}px; top:{{stickerImageMarginY}}px; transform: scale({{stickerImageScale}}) rotate({{stickerImageRotate}}deg);"-->
+  <image id="iv_sticker" class="stickerImage" change:prop="{{main.reset}}" prop="{{isReset}}" src="{{stickerUrl}}" style="width:100px; height:100px; left:0px; top:0px; transform: scale(1) rotate(0deg);">
+    <block wx:if="{{hasStickerUrl}}">
+      <view class="stickerImageTopLine" />
+      <view class="stickerImageLeftLine" />
+      <view class="stickerImageBottomLine" />
+      <view class="stickerImageRightLine" />
+    </block>
+  </image>
+  </view>
+
+  <!-- 3 个按钮菜单 -->
+  <view class="stickerMenu">
+    <view wx:for="{{stickerMenuList}}"
+      wx:for-item="item"
+      wx:for-index="index"
+      wx:key="id"
+      class="textMenu {{item.isActive?'active':''}}"
+      hover-class="textMenuHover"
+      bindtap="stickerMenuTap"
+      data-id="{{item.id}}">{{item.name}}</view>
+  </view>
+
+  <!--左右滑动贴纸列表-->
+  <scroll-view class="scrollViewHorizontal" scroll-left="{{scrollViewTopNum}}" scroll-x="true" 
+  enhanced="true" show-scrollbar="{{false}}">
+    <view wx:for="{{stickerImageList}}" 
+      wx:for-item="item" 
+      wx:for-index="index"
+      wx:key="id"
+      class="scrollViewHorizontalItem"
+      bindtap="stickerImageItemTap"
+      data-url="{{item.url}}"
+      hover-class="scrollViewHorizontalItemHover">
+      <image src="{{item.url}}" mode="aspectFit"  class="scrollViewHorizontalItemImage"/>
+      <text class="scrollViewHorizontalItemText">{{item.name}}</text>
+    </view>
+  </scroll-view>
+
+   <!--关于悬浮按钮-->
+   <movable-view class="movableViewAbout" direction="all" out-of-bounds="true" x="{{movableViewAboutX}}" y="{{movableViewAboutY}}" animation="{{false}}"
+   bindtap="aboutViewTap">
+    <view hover-class="viewAboutHover">关于</view>
+   </movable-view>
+
+  <!--保存按钮-->
+  <view class="saveView" hover-class="saveViewHover" bindtap="saveViewClick">
+     <!-- 指示 icon -->
+    <image class="imageDone" src="../image/cat_pow.png"/>
+  </view>
+
+  <!-- 重置按钮，点击恢复开始状态，可以继续操作图片 -->
+  <view wx:if="{{canRefresh}}" class="refreshView" hover-class="refreshViewHover"
+  bindtap="refreshViewClick">
+    <mp-icon class="iconRefresh" color="#cac34f" size="{{30}}" icon="refresh" type="filled"/>
+  </view>
+  
+</movable-area>

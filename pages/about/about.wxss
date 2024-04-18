@@ -1,0 +1,28 @@
+/* pages/about/about.wxss */
+
+/* 作者背景样式 */
+.designerBackground {
+  width: 100%;
+  display: flex;
+  margin-top: 30vh;
+  justify-content: center;
+}
+
+/* 联系我们背景样式 */
+
+.contactUsBackground {
+  width: 100%;
+  display: flex;
+  margin-top: 32rpx;
+  justify-content: center;
+}
+
+/* 版本的背景样式 */
+.versionBackground {
+  width: 100%;
+  display: flex;
+  position: fixed;
+  bottom: 32rpx;
+  justify-content: center;
+  align-items: center;
+}

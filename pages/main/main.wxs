@@ -1,0 +1,177 @@
+// 是否可以单指移动
+canOnePointMove = false;
+// 单指触摸的 x, y 坐标
+var onePoint = {
+  x : 0,
+  y : 0
+};
+// 双指触摸的 x, y 坐标
+var twoPoint = {
+  x1 : 0,
+  y1 : 0,
+  x2 : 0,
+  y2 : 0
+};
+
+// 贴纸的尺寸
+var stickerImageSize = 100;
+// 贴纸距离左 和 顶部的 marjin
+var stickerImageMarginX = 0;
+var stickerImageMarginY = 0;
+
+// 贴纸缩放系数
+var stickerImageScale = 1;
+
+// 贴纸旋转角度
+var stickerImageRotate = 0;
+
+// 头像背景的范围
+var viewAvatarRange = {
+  left : 0,
+  top : 0,
+  right : 0,
+  bottom : 0
+};
+
+var smallScalle = 0.2;
+
+var bigScalle = 3.5;
+
+//
+function touchstart(event, ownerInstance) {
+  var avatarBackground = ownerInstance.selectComponent('.avatarBackground');
+  var avatarRange = avatarBackground.getBoundingClientRect();
+  // console.log("avatarBackground-->", JSON.stringify(avatarRange));
+  viewAvatarRange['left'] = avatarRange.left;
+  viewAvatarRange['top'] = avatarRange.top;
+  viewAvatarRange['right'] = avatarRange.right;
+  viewAvatarRange['bottom'] = avatarRange.bottom;
+  // 单指触摸
+  if (event.touches.length == 1 ) {
+    // 判断触摸点是否在贴纸框内
+    // 触摸信息中，包含触摸点触发的 view 信息，可以判断是否是贴纸控件触发的
+    if (event.target.id == "iv_sticker") {
+      canOnePointMove = true,
+      onePoint['x'] = event.touches[0].pageX,
+      onePoint['y'] = event.touches[0].pageY
+    }
+  } else {
+    // 多指触控
+    twoPoint['x1'] = event.touches[0].pageX,
+    twoPoint['y1'] = event.touches[0].pageY,
+    twoPoint['x2'] = event.touches[1].pageX,
+    twoPoint['y2'] = event.touches[1].pageY
+  }
+}
+
+function touchmove(event, ownerInstance) {
+  if (event.touches.length == 1 && canOnePointMove) {
+    // let 没有定义
+    var onePointDiffX = (event.touches[0].pageX - onePoint['x']) / 2;
+    var onePointDiffY = (event.touches[0].pageY - onePoint['y']) / 2;
+
+    // 进行边界处理判断，贴纸位置不能移除头像外
+    // 真机会有卡顿，考虑是否做到触摸结束后，添加一个回退动画，限制其范围。
+    var marginX = stickerImageMarginX + onePointDiffX;
+    var marginY = stickerImageMarginY + onePointDiffY;
+
+    var fixImageSize = stickerImageSize * stickerImageScale;
+    var fixMarginX = marginX - (fixImageSize - stickerImageSize) / 2;
+
+    var fixMarginY = marginY - (fixImageSize - stickerImageSize) / 2;
+
+    var booleanX = ((fixMarginX + viewAvatarRange['left']) > (viewAvatarRange['right'] - fixImageSize / 2)
+    || (fixMarginX + viewAvatarRange['left']) < (viewAvatarRange['left'] - fixImageSize / 2));
+
+    var booleanY = ((fixMarginY + viewAvatarRange['top']) > (viewAvatarRange['bottom'] - fixImageSize / 2)
+    || (fixMarginY + viewAvatarRange['top']) < (viewAvatarRange['top'] - fixImageSize / 2));
+
+    if (!booleanX) {
+      stickerImageMarginX = marginX;
+      onePoint['x'] = event.touches[0].pageX;
+    }
+
+    if (!booleanY) {
+      stickerImageMarginY = marginY;
+      onePoint['y'] = event.touches[0].pageY;
+    }
+
+    ownerInstance.selectComponent('.stickerImage').setStyle({
+      left: stickerImageMarginX + 'px',
+      top: stickerImageMarginY + 'px',
+      transform : 'scale(' + stickerImageScale + ')' + ' rotate(' + stickerImageRotate + 'deg)'
+    })
+  } else if(event.touches.length >= 2){// 加个判断，否则移动时，报错找不到 pageX
+    var preTwoPoint = JSON.parse(JSON.stringify(twoPoint));
+    
+    twoPoint['x1'] = event.touches[0].pageX;
+    twoPoint['y1'] = event.touches[0].pageY;
+    twoPoint['x2'] = event.touches[1].pageX;
+    twoPoint['y2'] = event.touches[1].pageY;
+
+    // 计算角度，旋转优先
+    // tan(x) = 对边 / 邻边
+    var perAngle = Math.atan((preTwoPoint['y1'] - preTwoPoint['y2']) / (preTwoPoint['x1'] - preTwoPoint['x2'])) * 180 / Math.PI;
+
+    var curAngle = Math.atan((twoPoint['y1'] - twoPoint['y2']) / (twoPoint['x1'] - twoPoint['x2'])) * 180 / Math.PI;
+
+    stickerImageRotate = stickerImageRotate + (curAngle - perAngle)
+
+    // 计算距离，缩放
+    var preDistance = Math.sqrt(Math.pow((preTwoPoint['x1'] - preTwoPoint['x2']), 2) + Math.pow((preTwoPoint['y1'] - preTwoPoint['y2']), 2));
+
+    var curDistance = Math.sqrt(Math.pow((twoPoint['x1'] - twoPoint['x2']), 2) + Math.pow((twoPoint['y1'] - twoPoint['y2']), 2));
+
+    if (Math.abs(curDistance - preDistance) > 0) {
+
+      // 进行一个缩放尺寸的限制
+      var scale = stickerImageScale + (curDistance - preDistance) * 0.005;
+      if (scale < smallScalle || scale >= bigScalle) {
+        return;
+      }
+      stickerImageScale = scale;
+      ownerInstance.selectComponent('.stickerImage').setStyle({
+        left: stickerImageMarginX + 'px',
+        top: stickerImageMarginY + 'px',
+        transform : 'scale(' + stickerImageScale + ')' + ' rotate(' + stickerImageRotate + 'deg)'
+      })
+    }
+  }
+}
+
+function touchend(event, ownerInstance) {
+  canOnePointMove = false;
+  // 触摸结束时，将贴纸的尺寸回掉到 js，js 没有找到通过 wxml 获取 view 的信息
+  var stickInfo = {
+    stickerSize : stickerImageSize,
+    stickerMarginX : stickerImageMarginX,
+    stickerMarginY : stickerImageMarginY,
+    stickerScale : stickerImageScale,
+    stickerRotate : stickerImageRotate
+  }
+  ownerInstance.callMethod('onStickerInfoChange', stickInfo);
+}
+
+function reset(newValue, oldValue, ownerInstance, instance) {
+  // 贴纸的尺寸
+  stickerImageSize = 100;
+  // 贴纸距离左 和 顶部的 marjin
+  stickerImageMarginX = 0;
+  stickerImageMarginY = 0;
+  // 贴纸缩放系数
+  stickerImageScale = 1;
+  // 贴纸旋转角度
+  stickerImageRotate = 0;
+  ownerInstance.selectComponent('.stickerImage').setStyle({
+    left: stickerImageMarginX + 'px',
+    top: stickerImageMarginY + 'px',
+    transform : 'scale(' + stickerImageScale + ')' + ' rotate(' + stickerImageRotate + 'deg)'
+  })
+}
+
+module.exports = {
+  touchstart : touchstart,
+  touchmove : touchmove,
+  touchend : touchend,
+  reset : reset
+}

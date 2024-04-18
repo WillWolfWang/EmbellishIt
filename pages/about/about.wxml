@@ -1,0 +1,18 @@
+<!--pages/about/about.wxml-->
+<view >
+
+  <view class="designerBackground">
+    <text>作者：</text>
+    <text>美珊迪、疾风紫狼</text>
+  </view>
+  
+  <view class="contactUsBackground">
+    <text>联系我们：</text>
+    <text selectable="true">PasteIt@126.com</text>
+  </view>
+
+  <view class="versionBackground">
+  <text>版本信息：V1.0.4</text>
+</view>
+</view>
+
